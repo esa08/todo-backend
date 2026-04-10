@@ -1,5 +1,6 @@
 package com.esa.todo.controller
 
+import com.esa.todo.dto.ApiResponse
 import com.esa.todo.dto.TodoRequest
 import com.esa.todo.dto.TodoResponse
 import com.esa.todo.service.TodoService
@@ -14,38 +15,89 @@ class TodoController(private val todoService: TodoService) {
 
     // GET /api/todos
     @GetMapping
-    fun getAllTodos(): ResponseEntity<List<TodoResponse>> =
-        ResponseEntity.ok(todoService.getAllTodos())
+    fun getAllTodos(): ResponseEntity<ApiResponse<List<TodoResponse>>> {
+        val data = todoService.getAllTodos()
+        return ResponseEntity.ok(
+            ApiResponse(
+                success = true,
+                status = 200,
+                message = "Todos retrieved successfully",
+                data = data
+            )
+        )
+    }
 
     // GET /api/todos/{id}
     @GetMapping("/{id}")
-    fun getTodoById(@PathVariable id: Long): ResponseEntity<TodoResponse> =
-        ResponseEntity.ok(todoService.getTodoById(id))
+    fun getTodoById(@PathVariable id: Long): ResponseEntity<ApiResponse<TodoResponse>> {
+        val data = todoService.getTodoById(id)
+        return ResponseEntity.ok(
+            ApiResponse(
+                success = true,
+                status = 200,
+                message = "Todo retrieved successfully",
+                data = data
+            )
+        )
+    }
 
     // GET /api/todos/category/{categoryId}
     @GetMapping("/category/{categoryId}")
-    fun getTodosByCategory(@PathVariable categoryId: Long): ResponseEntity<List<TodoResponse>> =
-        ResponseEntity.ok(todoService.getTodosByCategory(categoryId))
+    fun getTodosByCategory(@PathVariable categoryId: Long): ResponseEntity<ApiResponse<List<TodoResponse>>> {
+        val data = todoService.getTodosByCategory(categoryId)
+        return ResponseEntity.ok(
+            ApiResponse(
+                success = true,
+                status = 200,
+                message = "Todos by category retrieved successfully",
+                data = data
+            )
+        )
+    }
 
     // POST /api/todos
     @PostMapping
     fun createTodo(
         @Valid @RequestBody request: TodoRequest
-    ): ResponseEntity<TodoResponse> =
-        ResponseEntity.status(HttpStatus.CREATED).body(todoService.createTodo(request))
+    ): ResponseEntity<ApiResponse<TodoResponse>> {
+        val data = todoService.createTodo(request)
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+            ApiResponse(
+                success = true,
+                status = 201,
+                message = "Todo created successfully",
+                data = data
+            )
+        )
+    }
 
     // PUT /api/todos/{id}
     @PutMapping("/{id}")
     fun updateTodo(
         @PathVariable id: Long,
         @Valid @RequestBody request: TodoRequest
-    ): ResponseEntity<TodoResponse> =
-        ResponseEntity.ok(todoService.updateTodo(id, request))
+    ): ResponseEntity<ApiResponse<TodoResponse>> {
+        val data = todoService.updateTodo(id, request)
+        return ResponseEntity.ok(
+            ApiResponse(
+                success = true,
+                status = 200,
+                message = "Todo updated successfully",
+                data = data
+            )
+        )
+    }
 
     // DELETE /api/todos/{id}
     @DeleteMapping("/{id}")
-    fun deleteTodo(@PathVariable id: Long): ResponseEntity<Map<String, String>> {
+    fun deleteTodo(@PathVariable id: Long): ResponseEntity<ApiResponse<Nothing>> {
         todoService.deleteTodo(id)
-        return ResponseEntity.ok(mapOf("message" to "Todo berhasil dihapus"))
+        return ResponseEntity.ok(
+            ApiResponse(
+                success = true,
+                status = 200,
+                message = "Todo deleted successfully"
+            )
+        )
     }
 }

@@ -25,7 +25,7 @@ class CategoryService(private val categoryRepository: CategoryRepository) {
     // GET kategori by ID
     fun getCategoryById(id: Long): CategoryResponse {
         val category = categoryRepository.findById(id)
-            .orElseThrow { ResourceNotFoundException("Kategori dengan ID $id tidak ditemukan") }
+            .orElseThrow { ResourceNotFoundException("Category with ID $id not found") }
         return category.toResponse()
     }
 
@@ -38,7 +38,7 @@ class CategoryService(private val categoryRepository: CategoryRepository) {
     // UPDATE kategori
     fun updateCategory(id: Long, request: CategoryRequest): CategoryResponse {
         val existing = categoryRepository.findById(id)
-            .orElseThrow { ResourceNotFoundException("Kategori dengan ID $id tidak ditemukan") }
+            .orElseThrow { ResourceNotFoundException("Category with ID $id not found") }
         val updated = existing.copy(name = request.name)
         return categoryRepository.save(updated).toResponse()
     }
@@ -46,7 +46,7 @@ class CategoryService(private val categoryRepository: CategoryRepository) {
     // DELETE kategori
     fun deleteCategory(id: Long) {
         if (!categoryRepository.existsById(id)) {
-            throw ResourceNotFoundException("Kategori dengan ID $id tidak ditemukan")
+            throw ResourceNotFoundException("Category with ID $id not found")
         }
         categoryRepository.deleteById(id)
     }

@@ -34,14 +34,14 @@ class TodoService(
     // GET todo by ID
     fun getTodoById(id: Long): TodoResponse {
         val todo = todoRepository.findById(id)
-            .orElseThrow { ResourceNotFoundException("Todo dengan ID $id tidak ditemukan") }
+            .orElseThrow { ResourceNotFoundException("Todo with ID $id not found") }
         return todo.toResponse()
     }
 
     // GET todo by category ID
     fun getTodosByCategory(categoryId: Long): List<TodoResponse> {
         if (!categoryRepository.existsById(categoryId)) {
-            throw ResourceNotFoundException("Kategori dengan ID $categoryId tidak ditemukan")
+            throw ResourceNotFoundException("Category with ID $categoryId not found")
         }
         return todoRepository.findByCategoryId(categoryId).map { it.toResponse() }
     }
@@ -49,7 +49,7 @@ class TodoService(
     // CREATE todo baru
     fun createTodo(request: TodoRequest): TodoResponse {
         val category = categoryRepository.findById(request.categoryId)
-            .orElseThrow { ResourceNotFoundException("Kategori dengan ID ${request.categoryId} tidak ditemukan") }
+            .orElseThrow { ResourceNotFoundException("Category with ID ${request.categoryId} not found") }
 
         val todo = Todo(
             category = category,
@@ -64,10 +64,10 @@ class TodoService(
     // UPDATE todo
     fun updateTodo(id: Long, request: TodoRequest): TodoResponse {
         val existing = todoRepository.findById(id)
-            .orElseThrow { ResourceNotFoundException("Todo dengan ID $id tidak ditemukan") }
+            .orElseThrow { ResourceNotFoundException("Todo with ID $id not found") }
 
         val category = categoryRepository.findById(request.categoryId)
-            .orElseThrow { ResourceNotFoundException("Kategori dengan ID ${request.categoryId} tidak ditemukan") }
+            .orElseThrow { ResourceNotFoundException("Category with ID ${request.categoryId} not found") }
 
         val updated = existing.copy(
             category = category,
@@ -82,7 +82,7 @@ class TodoService(
     // DELETE todo
     fun deleteTodo(id: Long) {
         if (!todoRepository.existsById(id)) {
-            throw ResourceNotFoundException("Todo dengan ID $id tidak ditemukan")
+            throw ResourceNotFoundException("Todo with ID $id not found")
         }
         todoRepository.deleteById(id)
     }
